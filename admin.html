@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nextel Connect — Admin</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --dark:   #071a0f;
+            --green:  #1a7a4a;
+            --green2: #25a060;
+            --gold:   #C9A84C;
+            --gold2:  #D4A843;
+            --panel:  rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, rgba(201,168,76,0.08), transparent 28%),
+                        radial-gradient(circle at bottom left, rgba(26,122,74,0.07), transparent 30%),
+                        var(--dark);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* ── Login Overlay ── */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(7,26,15,0.98);
+            z-index: 100;
+        }
+
+        .login-card {
+            width: min(100%, 420px);
+            padding: 2.8rem;
+            border-radius: 28px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,168,76,0.18);
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            margin: 1rem;
+        }
+
+        .login-card img { width: 64px; margin-bottom: 1.2rem; }
+
+        .login-card h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .login-card h2 span { color: var(--gold); }
+
+        .login-card p {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 1.8rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .login-input:focus { border-color: var(--gold); }
+
+        .login-error {
+            font-size: 0.84rem;
+            color: #ff6b6b;
+            margin-bottom: 0.8rem;
+            min-height: 1.2em;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            border: none;
+            color: #071a0f;
+            font-weight: 800;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+        .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* ── Admin Shell ── */
+        #adminShell { display: none; }
+
+        /* ── Header ── */
+        .admin-header {
+            position: sticky;
+            top: 0;
+            padding: 1rem 1.8rem;
+            background: rgba(7,26,15,0.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .admin-logo img { width: 38px; }
+        .admin-logo span { color: var(--gold); }
+
+        .admin-badge {
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(201,168,76,0.12);
+            border: 1px solid rgba(201,168,76,0.25);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logout-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: rgba(255,255,255,0.65);
+            font-size: 0.82rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .logout-btn:hover { background: rgba(255,100,100,0.12); color: #ff8888; border-color: rgba(255,100,100,0.3); }
+
+        /* ── Body ── */
+        .admin-body {
+            width: min(100%, 1140px);
+            margin: 0 auto;
+            padding: 2rem 1.8rem 5rem;
+        }
+
+        .admin-page-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-page-sub {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 2rem;
+        }
+
+        /* ── Stats Row ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.4rem 1.6rem;
+            transition: border-color 0.3s;
+        }
+
+        .stat-box:hover { border-color: rgba(201,168,76,0.3); }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-value.gold  { color: var(--gold); }
+        .stat-value.green { color: #4ade80; }
+        .stat-value.white { color: rgba(255,255,255,0.7); }
+
+        /* ── Cards ── */
+        .admin-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .admin-card-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            margin-bottom: 1.4rem;
+        }
+
+        /* ── Link editor ── */
+        .link-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .link-input {
+            flex: 1;
+            padding: 0.85rem 1.2rem;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.93rem;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .link-input:focus { border-color: var(--gold); }
+
+        .save-btn {
+            padding: 0.85rem 1.6rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            border: none;
+            color: #071a0f;
+            font-weight: 800;
+            font-size: 0.92rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+
+        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .save-btn:not(:disabled):hover { filter: brightness(1.1); }
+
+        .link-status {
+            font-size: 0.83rem;
+            margin-top: 0.6rem;
+            min-height: 1.2em;
+            color: #4ade80;
+        }
+
+        .link-status.error { color: #ff6b6b; }
+
+        .current-link-label {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 0.4rem;
+        }
+
+        .current-link-value {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.7);
+            word-break: break-all;
+        }
+
+        /* ── Table ── */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.87rem;
+        }
+
+        thead th {
+            padding: 0.9rem 1.1rem;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.025);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 0.85rem 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.035);
+            color: rgba(255,255,255,0.8);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .badge-active {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0.22rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(74,222,128,0.1);
+            color: #4ade80;
+            border: 1px solid rgba(74,222,128,0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn {
+            padding: 0.42rem 1.1rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: rgba(255,255,255,0.65);
+            font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn:hover { background: rgba(255,255,255,0.1); }
+
+        /* ── Toast ── */
+        .toast-bar {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.6rem;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: #071a0f;
+            font-weight: 800;
+            font-size: 0.88rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 200;
+            white-space: nowrap;
+        }
+
+        .toast-bar.show { opacity: 1; }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .login-card { padding: 2rem 1.4rem; }
+            .admin-header { padding: 0.85rem 1rem; }
+            .admin-logo { font-size: 1.05rem; gap: 8px; }
+            .admin-logo img { width: 28px; }
+            .admin-badge { display: none; }
+            .logout-btn { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+            .admin-body { padding: 1.2rem 1rem 3rem; }
+            .admin-card { padding: 1.2rem 1rem; border-radius: 18px; margin-bottom: 1.2rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .stat-box { padding: 1rem; border-radius: 14px; }
+            .stat-value { font-size: 1.6rem; }
+            .link-row { flex-direction: column; }
+            .save-btn { width: 100%; }
+            table { font-size: 0.78rem; }
+            thead th { padding: 0.65rem 0.7rem; font-size: 0.65rem; }
+            tbody td { padding: 0.65rem 0.7rem; }
+            thead th:nth-child(5),
+            tbody td:nth-child(5) { display: none; }
+            thead th:nth-child(6),
+            tbody td:nth-child(6) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Login Overlay ─────────────────────────────────────────────────────── -->
+<div id="loginOverlay">
+    <div class="login-card">
+        <img src="assets/logo.png" alt="Nextel Connect">
+        <h2>Admin <span>Access</span></h2>
+        <p>Enter the admin password to continue</p>
+        <input type="password" id="passwordInput" class="login-input" placeholder="Password" autocomplete="current-password">
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="loginBtn">
+            <i class="fa-solid fa-lock me-2"></i>Enter Dashboard
+        </button>
+    </div>
+</div>
+
+<!-- ── Admin Shell ────────────────────────────────────────────────────────── -->
+<div id="adminShell">
+
+    <!-- Header -->
+    <header class="admin-header">
+        <a href="index.html" class="admin-logo">
+            <img src="assets/logo.png" alt="Nextel Connect">
+            Nextel<span>.</span>
+        </a>
+        <div class="admin-header-right">
+            <span class="admin-badge"><i class="fa-solid fa-shield-halved me-1"></i>Admin Panel</span>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- Body -->
+    <div class="admin-body">
+        <div class="admin-page-title">Dashboard</div>
+        <div class="admin-page-sub">Overview of Nextel Connect registrations and settings</div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-box">
+                <div class="stat-label"><i class="fa-solid fa-receipt"></i> Total Transactions</div>
+                <div class="stat-value gold" id="statTotal">—</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label"><i class="fa-solid fa-naira-sign"></i> Total Funds</div>
+                <div class="stat-value green" id="statFunds">—</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label"><i class="fa-solid fa-chart-bar"></i> Avg. per User</div>
+                <div class="stat-value white" id="statAvg">—</div>
+            </div>
+        </div>
+
+        <!-- Telegram Link Editor -->
+        <div class="admin-card">
+            <div class="admin-card-title">
+                <i class="fab fa-telegram me-2" style="color:#2AABEE"></i>Telegram Redirect Link
+            </div>
+            <div class="current-link-label">Current link</div>
+            <div class="current-link-value" id="currentLinkDisplay">Loading…</div>
+            <div class="link-row mt-3">
+                <input type="url" class="link-input" id="tgLinkInput" placeholder="https://t.me/your_channel_or_group">
+                <button class="save-btn" id="saveLinkBtn">Save</button>
+            </div>
+            <div class="link-status" id="linkStatus"></div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="admin-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="admin-card-title mb-0">
+                    <i class="fa-solid fa-receipt me-2"></i>Recent Transactions
+                </div>
+                <button class="refresh-btn" id="refreshBtn">
+                    <i class="fa-solid fa-rotate-right me-1"></i>Refresh
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Package</th>
+                            <th>Amount (NGN)</th>
+                            <th>Reference</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="8" class="empty-state">Loading transactions…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="toast-bar" id="toastBar"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
+                                from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey:            "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
+        authDomain:        "glamour-28049.firebaseapp.com",
+        projectId:         "glamour-28049",
+        storageBucket:     "glamour-28049.firebasestorage.app",
+        messagingSenderId: "22177815395",
+        appId:             "1:22177815395:web:2ca7caa2b1626299675156"
+    };
+
+    const ADMIN_PASSWORD = "bobbymania";
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app, "(default)");
+
+    const SESSION_KEY = "nextel_admin_authed";
+    const CONFIG_DOC  = doc(db, "account", "nextelbobby");
+
+    // ── Toast ──
+    function showToast(msg) {
+        const bar = document.getElementById("toastBar");
+        bar.textContent = msg;
+        bar.classList.add("show");
+        setTimeout(() => bar.classList.remove("show"), 2200);
+    }
+
+    // ── Login / Logout ──
+    function revealAdmin() {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("adminShell").style.display   = "block";
+        loadConfig();
+        loadUsers();
+    }
+
+    function checkSession() {
+        if (sessionStorage.getItem(SESSION_KEY) === "1") revealAdmin();
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+        const val = document.getElementById("passwordInput").value;
+        const err = document.getElementById("loginError");
+        if (val === ADMIN_PASSWORD) {
+            sessionStorage.setItem(SESSION_KEY, "1");
+            err.textContent = "";
+            revealAdmin();
+        } else {
+            err.textContent = "Incorrect password. Try again.";
+            document.getElementById("passwordInput").value = "";
+        }
+    });
+
+    document.getElementById("passwordInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") document.getElementById("loginBtn").click();
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        sessionStorage.removeItem(SESSION_KEY);
+        location.reload();
+    });
+
+    checkSession();
+
+    // ── Config (Telegram link) ──
+    async function loadConfig() {
+        try {
+            const snap = await getDoc(CONFIG_DOC);
+            const link = snap.exists() ? (snap.data().telegramLink || "") : "";
+            document.getElementById("currentLinkDisplay").textContent = link || "Not set";
+            document.getElementById("tgLinkInput").value = link;
+            document.getElementById("linkStatus").textContent = "";
+        } catch (err) {
+            document.getElementById("currentLinkDisplay").textContent = "Error loading";
+            document.getElementById("linkStatus").textContent = err.message || "Unknown error";
+            document.getElementById("linkStatus").className = "link-status error";
+        }
+    }
+
+    document.getElementById("saveLinkBtn").addEventListener("click", async () => {
+        const btn    = document.getElementById("saveLinkBtn");
+        const status = document.getElementById("linkStatus");
+        const input  = document.getElementById("tgLinkInput");
+        const link   = input.value.trim();
+
+        if (!link.startsWith("http")) {
+            status.textContent = "Please enter a valid URL (must start with https://).";
+            status.className   = "link-status error";
+            return;
+        }
+
+        btn.disabled    = true;
+        btn.textContent = "Saving…";
+        status.textContent = "";
+
+        try {
+            await setDoc(CONFIG_DOC, { telegramLink: link }, { merge: true });
+            document.getElementById("currentLinkDisplay").textContent = link;
+            status.textContent = "✓ Link saved successfully.";
+            status.className   = "link-status";
+            showToast("Telegram link updated!");
+        } catch (err) {
+            status.textContent = "Save failed. Check Firestore permissions.";
+            status.className   = "link-status error";
+        } finally {
+            btn.disabled    = false;
+            btn.textContent = "Save";
+        }
+    });
+
+    // ── Users Table ──
+    async function loadUsers() {
+        const tbody = document.getElementById("usersTableBody");
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Loading…</td></tr>`;
+
+        try {
+            const snap  = await getDocs(collection(db, "nextelusers"));
+            const users = [];
+            snap.forEach((d) => users.push(d.data()));
+
+            const transactions = users.filter(u => u.activated && u.koraReference);
+
+            const totalFunds = transactions.reduce((s, u) => s + Number(u.activationAmount || 0), 0);
+            const avg        = transactions.length ? Math.round(totalFunds / transactions.length) : 0;
+
+            document.getElementById("statTotal").textContent = transactions.length;
+            document.getElementById("statFunds").textContent = `₦${totalFunds.toLocaleString()}`;
+            document.getElementById("statAvg").textContent   = transactions.length ? `₦${avg.toLocaleString()}` : "—";
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No transactions yet.</td></tr>`;
+                return;
+            }
+
+            transactions.sort((a, b) => {
+                const ta = a.joinedAt?.seconds ? a.joinedAt.seconds * 1000 : new Date(a.joinedAt || 0).getTime();
+                const tb = b.joinedAt?.seconds ? b.joinedAt.seconds * 1000 : new Date(b.joinedAt || 0).getTime();
+                return tb - ta;
+            });
+
+            tbody.innerHTML = transactions.map((u, i) => {
+                const date = u.joinedAt?.seconds
+                    ? new Date(u.joinedAt.seconds * 1000).toLocaleString("en-NG", {
+                        day: "2-digit", month: "short", year: "numeric",
+                        hour: "2-digit", minute: "2-digit"
+                      })
+                    : u.joinedAt
+                        ? new Date(u.joinedAt).toLocaleString("en-NG", {
+                            day: "2-digit", month: "short", year: "numeric",
+                            hour: "2-digit", minute: "2-digit"
+                          })
+                        : "—";
+
+                const ref      = u.koraReference || "—";
+                const shortRef = ref.length > 18 ? ref.slice(0, 18) + "…" : ref;
+
+                return `<tr>
+                    <td style="color:rgba(255,255,255,.3)">${i + 1}</td>
+                    <td style="font-weight:600">${esc(u.fullName || "—")}</td>
+                    <td style="color:rgba(255,255,255,.6)">${esc(u.email || "—")}</td>
+                    <td style="color:rgba(255,255,255,.6)">${esc(u.phone || "—")}</td>
+                    <td>
+                        <span class="badge-active">${esc(u.planName || "—")}</span>
+                    </td>
+                    <td style="color:var(--gold);font-weight:700">₦${Number(u.activationAmount || 0).toLocaleString()}</td>
+                    <td style="color:rgba(255,255,255,.4);font-size:.78rem;font-family:monospace" title="${esc(ref)}">${esc(shortRef)}</td>
+                    <td style="color:rgba(255,255,255,.4);white-space:nowrap;font-size:.8rem">${date}</td>
+                </tr>`;
+            }).join("");
+
+        } catch (err) {
+            console.error("loadUsers error:", err);
+            tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Error: ${esc(err.code || err.message || "unknown")}</td></tr>`;
+        }
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+        loadUsers();
+        showToast("Refreshed");
+    });
+
+    function esc(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+</script>
+
+</body>
+</html>

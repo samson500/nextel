@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nextel Connect - Your World, Your Network</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/logo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo.png">
+    <link rel="shortcut icon" href="assets/logo.png">
+    <meta name="theme-color" content="#0D3D2E">
+
+    <meta name="description" content="Nextel Connect reverses the traditional telecom system — turning everyday network activity into an asset you earn from. Your World, Your Network.">
+    <meta name="keywords" content="Nextel Connect, telecom, earn from calls, reversed billing, digital telecom landlord, Nigeria, network rewards">
+    <meta name="author" content="Nextel Connect">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Nextel Connect - Your World, Your Network">
+    <meta property="og:description" content="Turn every call into cash. Nextel Connect gives you a share of Nigeria's ₦7 Trillion telecom industry.">
+    <meta property="og:image" content="assets/logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --dark:        #071a0f;
+            --green:       #1a7a4a;
+            --green-light: #25a060;
+            --gold:        #C9A84C;
+            --gold-light:  #D4A843;
+            --cream:       #f5f0e8;
+            --glow:        rgba(37, 160, 96, 0.35);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: #fff;
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #071a0f; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--green), var(--gold));
+            border-radius: 10px;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            padding: 1rem 0;
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .navbar.scrolled {
+            background-color: rgba(7, 26, 15, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+        }
+
+        .navbar-brand img { height: 44px; }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+            font-weight: 500;
+            margin: 0 0.6rem;
+            transition: color 0.2s;
+        }
+        .navbar-nav .nav-link:hover { color: var(--gold); }
+
+        .navbar-toggler {
+            border: none;
+            color: rgba(255,255,255,0.8);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        .navbar-toggler:focus { box-shadow: none; }
+
+        .navbar-custom.toggled {
+            background-color: rgba(7, 26, 15, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ── Buttons ── */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #071a0f;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(201,168,76,0.4);
+            color: #071a0f;
+        }
+
+        .btn-outline-gold {
+            background: transparent;
+            color: var(--gold);
+            font-weight: 600;
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-outline-gold:hover {
+            background: var(--gold);
+            color: #071a0f;
+        }
+
+        .btn-sm-gold {
+            padding: 0.45rem 1.2rem;
+            font-size: 0.88rem;
+        }
+
+        /* ── Section globals ── */
+        section:not(#hero-section) {
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--gold);
+            background: rgba(201,168,76,0.12);
+            border: 1px solid rgba(201,168,76,0.25);
+            border-radius: 999px;
+            padding: 0.35rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-heading {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #fff;
+        }
+
+        .section-heading span { color: var(--gold); }
+
+        .section-text {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.78);
+            line-height: 1.85;
+        }
+
+        /* ── Hero ── */
+        #hero-section {
+            position: relative;
+            background: radial-gradient(ellipse at top left, rgba(26,122,74,0.18), transparent 55%),
+                        radial-gradient(ellipse at bottom right, rgba(201,168,76,0.10), transparent 50%),
+                        var(--dark);
+            padding: 140px 20px 60px;
+            text-align: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── Hero Video ── */
+        .hero-video-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 60px;
+        }
+
+        .hero-video-wrap video {
+            width: 100%;
+            max-width: 480px;
+            height: auto;
+            border-radius: 20px;
+            object-fit: contain;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .hero-video-wrap video {
+                max-width: 100%;
+                border-radius: 14px;
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201,168,76,0.12);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: var(--gold);
+            border-radius: 999px;
+            padding: 0.45rem 1.2rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 1.8rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.2rem;
+            color: #fff;
+        }
+
+        .hero-title span { color: var(--gold); }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.78);
+            max-width: 620px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.55);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 4px;
+        }
+
+        .hero-stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.12);
+            align-self: stretch;
+        }
+
+
+        /* ── About Section ── */
+        #about-section { padding: 7rem 0; }
+
+        .about-img-wrap {
+            position: relative;
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+
+        .about-img-wrap img {
+            width: 100%;
+            border-radius: 1.5rem;
+            display: block;
+        }
+
+        .about-img-badge {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            background: rgba(7,26,15,0.88);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 14px;
+            padding: 0.85rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-img-badge .badge-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), var(--green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .about-img-badge .badge-text strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .about-img-badge .badge-text span {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .about-bullets {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 0;
+        }
+
+        .about-bullets li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.97rem;
+            color: rgba(255,255,255,0.82);
+            line-height: 1.6;
+        }
+
+        .about-bullets li i {
+            color: var(--gold);
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        /* ── How It Works ── */
+        #how-section { padding: 7rem 0; }
+
+        .step-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            height: 100%;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .step-card:hover {
+            border-color: rgba(201,168,76,0.35);
+            transform: translateY(-6px);
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--green), var(--green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1.2rem;
+        }
+
+        .step-card h4 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.6rem;
+        }
+
+        .step-card p {
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* ── Income Streams ── */
+        #streams-section { padding: 7rem 0; }
+
+        .stream-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            height: 100%;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+
+        .stream-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(201,168,76,0.12);
+            transform: translateY(-6px);
+        }
+
+        .stream-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .stream-icon.green { background: rgba(26,122,74,0.2); color: #4ade80; }
+        .stream-icon.gold  { background: rgba(201,168,76,0.15); color: var(--gold); }
+        .stream-icon.teal  { background: rgba(20,180,180,0.15); color: #2dd4bf; }
+
+        .stream-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stream-card p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.62);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .stream-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.82rem;
+        }
+
+        .stream-stat-label { color: rgba(255,255,255,0.45); }
+        .stream-stat-value { font-weight: 700; color: var(--gold); }
+
+        /* ── Stats Section ── */
+        #stats-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, rgba(26,122,74,0.12), rgba(201,168,76,0.06));
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-big {
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.4rem;
+        }
+
+        /* ── Features Section (images) ── */
+        #features-section { padding: 7rem 0; }
+
+        .feature-panel { padding: 3.5rem 0; }
+
+        .feature-panel + .feature-panel {
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .feature-img-wrap {
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        }
+
+        .feature-img-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 1.5rem;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-img-wrap:hover img { transform: scale(1.03); }
+
+        .feature-text h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .feature-text h3 span { color: var(--gold); }
+        .feature-text p {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.72);
+            line-height: 1.8;
+        }
+
+        @media (min-width: 992px) {
+            .feature-panel:nth-child(even) .row { flex-direction: row-reverse; }
+        }
+
+        /* ── Packages Section ── */
+        #packages-section { padding: 7rem 0; }
+
+        .package-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.8rem;
+            padding: 2.5rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .package-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(201,168,76,0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .package-card.popular {
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 40px rgba(201,168,76,0.18);
+        }
+
+        .popular-tag {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #071a0f;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.25rem 0.8rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .package-tier {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .package-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .package-price {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin: 1rem 0;
+            line-height: 1;
+        }
+
+        .package-price sup {
+            font-size: 1.1rem;
+            top: -0.8em;
+        }
+
+        .package-price small {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .package-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem;
+        }
+
+        .package-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.9rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.82);
+        }
+
+        .package-features li i {
+            color: var(--gold);
+            font-size: 0.9rem;
+        }
+
+        /* ── FAQ ── */
+        #faq-section { padding: 7rem 0; }
+
+        .accordion-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1rem !important;
+            margin-bottom: 1rem;
+        }
+
+        .accordion-button {
+            background: transparent;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 1rem !important;
+            padding: 1.4rem 1.5rem;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: linear-gradient(135deg, var(--green), var(--green-light));
+            color: #fff;
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        .accordion-button:focus { box-shadow: none; }
+
+        .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+
+        .accordion-body {
+            color: rgba(255,255,255,0.78);
+            padding: 0 1.5rem 1.4rem;
+            line-height: 1.8;
+        }
+
+        /* ── CTA ── */
+        #cta-section {
+            padding: 7rem 0;
+            background: radial-gradient(ellipse at center, rgba(26,122,74,0.18), transparent 70%),
+                        var(--dark);
+        }
+
+        .cta-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(201,168,76,0.2);
+            border-radius: 2rem;
+            padding: 4rem 3rem;
+            text-align: center;
+        }
+
+        .cta-box h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .cta-box h2 span { color: var(--gold); }
+
+        .cta-box p {
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        /* ── Footer ── */
+        #footer {
+            background: #030f07;
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .footer-logo img { height: 44px; margin-bottom: 1rem; }
+
+        .footer-tagline {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.6);
+            margin-right: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #071a0f;
+        }
+
+        .footer-links h5 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links h5::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 28px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links ul li { margin-bottom: 0.65rem; }
+
+        .footer-links ul a {
+            color: rgba(255,255,255,0.55);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 0.88rem;
+        }
+
+        .footer-links ul a:hover { color: var(--gold); }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.65rem;
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .footer-contact-item i { color: var(--gold); width: 16px; }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.35);
+        }
+
+        .copyright span { color: var(--gold); font-weight: 600; }
+
+        /* ── Responsive ── */
+        @media (max-width: 991.98px) {
+            .section-heading { font-size: 2.2rem; }
+            .hero-title { font-size: 2.5rem; }
+            .hero-stats { gap: 1.5rem; }
+            .hero-stat-divider { display: none; }
+            #about-section, #how-section, #streams-section,
+            #features-section, #packages-section, #faq-section { padding: 4.5rem 0; }
+            .cta-box { padding: 2.5rem 1.5rem; }
+            #footer { text-align: center; }
+            .footer-links h5::after { left: 50%; transform: translateX(-50%); }
+            .social-links { justify-content: center; display: flex; }
+            .footer-contact-item { justify-content: center; }
+        }
+
+        @media (max-width: 575px) {
+            .hero-cta-group { flex-direction: column; align-items: center; }
+            .btn-gold, .btn-outline-gold { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Navbar ─────────────────────────────────────────────────────────────── -->
+<nav class="navbar navbar-custom navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="assets/logo.png" alt="Nextel Connect Logo">
+        </a>
+        <div class="d-flex align-items-center d-lg-none">
+            <a href="register.html" class="btn-gold btn-sm-gold me-2">Register</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="#hero-section">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about-section">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#how-section">How It Works</a></li>
+                <li class="nav-item"><a class="nav-link" href="#streams-section">Income Streams</a></li>
+                <li class="nav-item"><a class="nav-link" href="#packages-section">Packages</a></li>
+                <li class="nav-item"><a class="nav-link" href="#faq-section">FAQ</a></li>
+            </ul>
+        </div>
+        <a href="register.html" class="btn-gold d-none d-lg-inline-block">Register Now</a>
+    </div>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<section id="hero-section">
+    <div class="hero-content container" data-aos="fade-up">
+        <div class="hero-badge">
+            <i class="fa-solid fa-signal"></i>
+            Nigeria's Telecom Revolution Is Here
+        </div>
+
+        <h1 class="hero-title">
+            Every Call You Make<br>
+            <span>Earns You Money</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Nextel Connect reverses the traditional telecom system. Instead of paying for every minute you use, those same minutes flow value back to you — automatically.
+        </p>
+
+        <div class="hero-cta-group">
+            <a href="register.html" class="btn-gold">
+                <i class="fa-solid fa-rocket me-2"></i>Join the Network
+            </a>
+            <a href="#about-section" class="btn-outline-gold">
+                Learn More
+            </a>
+        </div>
+
+        <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
+            <div class="hero-stat">
+                <div class="hero-stat-value">220M+</div>
+                <div class="hero-stat-label">Active Connections</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">₦7T</div>
+                <div class="hero-stat-label">Industry Size</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">3</div>
+                <div class="hero-stat-label">Income Streams</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">₦10K</div>
+                <div class="hero-stat-label">Daily Potential</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Hero Video ─────────────────────────────────────────────────────────── -->
+<div class="hero-video-wrap" data-aos="fade-up" data-aos-delay="100">
+    <video controls autoplay muted loop playsinline poster="assets/hero-poster.jpg" id="heroVideo">
+        <source src="assets/hero.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- ── About Section ──────────────────────────────────────────────────────── -->
+<section id="about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="about-img-wrap">
+                    <img src="assets/img1.jpg" alt="Nextel Connect - Safe, Fast, Secure">
+                    <div class="about-img-badge">
+                        <div class="badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="badge-text">
+                            <strong>Safe. Fast. Secure.</strong>
+                            <span>Where every call creates value</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <span class="section-label">What is Nextel Connect?</span>
+                <h2 class="section-heading mb-3">
+                    The Telecom System <span>Reversed</span> For You
+                </h2>
+                <p class="section-text mb-3">
+                    For years, millions of people have faithfully paid for telecom services, generating enormous revenue for network providers every single day — yet receiving little or no direct financial benefit in return.
+                </p>
+                <p class="section-text mb-3">
+                    Nextel Connect changes that. By linking your current number to our platform, you tap directly into your network provider's infrastructure, turning every daily phone connection into an automatic cashback stream straight into your wallet.
+                </p>
+                <ul class="about-bullets">
+                    <li><i class="fa-solid fa-chevron-right"></i> No new phone or SIM card needed</li>
+                    <li><i class="fa-solid fa-chevron-right"></i> Fully automated — earn on autopilot</li>
+                    <li><i class="fa-solid fa-chevron-right"></i> Powered by reversed billing technology</li>
+                    <li><i class="fa-solid fa-chevron-right"></i> Physical POS outlets across Nigeria</li>
+                </ul>
+                <a href="register.html" class="btn-gold mt-3">Get Started</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── How It Works ───────────────────────────────────────────────────────── -->
+<section id="how-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="section-label">Simple Process</span>
+            <h2 class="section-heading">How It <span>Works</span></h2>
+            <p class="section-text mx-auto mt-3" style="max-width: 580px;">
+                Getting started takes minutes. Once you're in, the platform does all the heavy lifting.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>Register Your Number</h4>
+                    <p>Sign up and link your existing Nigerian phone number to the Nextel platform. No new SIM required.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>Load Your NTU Voucher</h4>
+                    <p>Scratch, load and activate your NTU voucher to fund your personal network with call minutes.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>Get Allocated Numbers</h4>
+                    <p>The platform allocates you a personal pool of phone numbers connected to the national network.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h4>Earn Per Second</h4>
+                    <p>As calls are made across the network, you earn automatically — per second, every single day.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Income Streams ─────────────────────────────────────────────────────── -->
+<section id="streams-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="section-label">Revenue Channels</span>
+            <h2 class="section-heading">3 Simultaneous <span>Income Streams</span></h2>
+            <p class="section-text mx-auto mt-3" style="max-width: 560px;">
+                Your account taps into three live revenue channels running quietly in the background every day.
+            </p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                <div class="stream-card">
+                    <div class="stream-icon green"><i class="fa-solid fa-bolt"></i></div>
+                    <h4>On Net Calls</h4>
+                    <p>Corporate & SME outbound calls on your network. High-volume traffic earns you a direct percentage every minute.</p>
+                    <div class="stream-stat">
+                        <span class="stream-stat-label">Traffic Type</span>
+                        <span class="stream-stat-value">Corporate &amp; SME</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="stream-card">
+                    <div class="stream-icon gold"><i class="fa-solid fa-network-wired"></i></div>
+                    <h4>Off Net Calls</h4>
+                    <p>High-value subscriber traffic routed across other networks — MTN, Airtel, Glo, 9mobile — all feeding your earnings.</p>
+                    <div class="stream-stat">
+                        <span class="stream-stat-label">Coverage</span>
+                        <span class="stream-stat-value">All Networks</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="stream-card">
+                    <div class="stream-icon teal"><i class="fa-solid fa-users"></i></div>
+                    <h4>Network Growth</h4>
+                    <p>As your network expands and more users connect, your share of the national telecom pool grows proportionally.</p>
+                    <div class="stream-stat">
+                        <span class="stream-stat-label">Pool Access</span>
+                        <span class="stream-stat-value">₦7T Industry</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard mockup image -->
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-8 text-center">
+                <img src="assets/img4.jpg" alt="Nextel App Dashboard" class="img-fluid rounded-4 shadow-lg" style="max-width:380px; border: 1px solid rgba(201,168,76,0.2);">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Stats ──────────────────────────────────────────────────────────────── -->
+<section id="stats-section">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="stat-item">
+                    <div class="stat-big">220M+</div>
+                    <div class="stat-desc">Active Nigerian Connections</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-item">
+                    <div class="stat-big">₦7T</div>
+                    <div class="stat-desc">Communication Industry Size</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-item">
+                    <div class="stat-big">₦10K</div>
+                    <div class="stat-desc">Daily Earning Potential</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-item">
+                    <div class="stat-big">24/7</div>
+                    <div class="stat-desc">Automated Earning — Always On</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Features (Image Panels) ────────────────────────────────────────────── -->
+<section id="features-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="section-label">Why Nextel</span>
+            <h2 class="section-heading">Built For the <span>Next Generation</span></h2>
+        </div>
+
+        <div class="feature-panel">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="feature-img-wrap">
+                        <img src="assets/img2.jpg" alt="220 Million Connections">
+                    </div>
+                </div>
+                <div class="col-lg-6 feature-text" data-aos="fade-left">
+                    <span class="section-label">Scale</span>
+                    <h3>Tapping Into <span>220 Million</span> Connections</h3>
+                    <p>We're powering access inside a ₦7 Trillion communication industry. You don't need to know 220 million people — the Nextel infrastructure handles the mapping automatically, letting your profile quietly tap directly into that massive pool.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-panel">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="feature-img-wrap">
+                        <img src="assets/img3.jpg" alt="Telecom makes money per second">
+                    </div>
+                </div>
+                <div class="col-lg-6 feature-text" data-aos="fade-left">
+                    <span class="section-label">Reversed Billing</span>
+                    <h3>Telecom Makes Money <span>Per Second</span></h3>
+                    <p>Telecom companies make money every single second as you and others make calls and surf the internet. Nextel teaches you how to make ₦5,000 – ₦10,000 daily as others make calls — because now, the gates are open to you.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-panel">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="feature-img-wrap">
+                        <img src="assets/img5.jpg" alt="NTU Voucher">
+                    </div>
+                </div>
+                <div class="col-lg-6 feature-text" data-aos="fade-left">
+                    <span class="section-label">NTU Voucher</span>
+                    <h3>Scratch, Load & <span>Activate</span> Daily Profits</h3>
+                    <p>Load minutes onto your personal network using the NTU Voucher. Scratch the card, enter the PIN, and watch your earning potential activate instantly. Something massive is hitting the web — and you're in early.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Packages ───────────────────────────────────────────────────────────── -->
+<section id="packages-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="section-label">Plans</span>
+            <h2 class="section-heading">Choose Your <span>Package</span></h2>
+            <p class="section-text mx-auto mt-3" style="max-width: 560px;">
+                Pay the one-time activation fee, get your account live, and start earning from day one.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-8 col-lg-6" data-aos="fade-up">
+                <div class="package-card popular">
+                    <div class="popular-tag">One Package. Full Access.</div>
+                    <div class="package-tier">Starter</div>
+                    <div class="package-name">Starter Package</div>
+                    <div class="package-price"><sup>₦</sup>10,000</div>
+                    <p class="package-desc">Everything you need to tap into Nigeria's ₦7 Trillion telecom industry and start earning from day one — one payment, full access.</p>
+                    <ul class="package-features">
+                        <li><i class="fa-solid fa-check-circle"></i> Personal number pool allocation</li>
+                        <li><i class="fa-solid fa-check-circle"></i> On Net call earnings</li>
+                        <li><i class="fa-solid fa-check-circle"></i> Off Net call earnings</li>
+                        <li><i class="fa-solid fa-check-circle"></i> NTU Voucher activation</li>
+                        <li><i class="fa-solid fa-check-circle"></i> Access to Nextel dashboard</li>
+                        <li><i class="fa-solid fa-check-circle"></i> Earn per second — 24/7 autopilot</li>
+                    </ul>
+                    <a href="register.html" class="btn-gold d-block text-center">Activate for ₦10,000</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────────────────────── -->
+<section id="faq-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="section-label">FAQ</span>
+            <h2 class="section-heading">Common <span>Questions</span></h2>
+        </div>
+
+        <div class="accordion" style="max-width: 780px; margin: 0 auto;" id="faqAccordion" data-aos="fade-up">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        Do I need a new SIM card or phone to get started?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        No. You do not need a new phone or a new SIM card. By linking your current number to Nextel Connect, the platform hooks you directly into your network provider's backend, turning your existing number into an earning asset.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        How do I actually earn money?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Once registered, the platform allocates you a personal pool of phone numbers and call minutes, then connects you to 3 simultaneous income streams — On Net calls, Off Net calls, and network growth — all running quietly in the background every day. You earn per second of call activity.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        What is an NTU Voucher?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        An NTU (Network Traffic Unit) Voucher is a scratch card that lets you load minutes directly onto your personal Nextel network. Scratch the card, enter the PIN on the platform, and your allocated minutes activate — unlocking your daily earning capacity.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        What's the difference between On Net and Off Net earnings?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        On Net earnings come from Corporate & SME outbound calls that happen within your network. Off Net earnings come from high-value subscriber traffic routed across other networks like MTN, Airtel, Glo, and 9mobile. Both feed into your wallet automatically.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                        Is Nextel Connect available in my city?
+                    </button>
+                </h2>
+                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Yes. Nextel is going beyond your screen and coming straight to your neighborhood with physical outlets and POS stands all across the country. You can also manage everything digitally through the app and website from anywhere in Nigeria.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                        How much can I realistically earn per day?
+                    </button>
+                </h2>
+                <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Earnings vary based on your package, allocated minutes, and network traffic. Active members report earnings of ₦5,000 – ₦10,000 daily across their three income streams. The more minutes you load and the more active your network, the higher your daily returns.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────────────────────── -->
+<section id="cta-section">
+    <div class="container" data-aos="zoom-in">
+        <div class="cta-box">
+            <span class="section-label">The Signal Is On</span>
+            <h2>Ready to Become a <span>Digital Telecom Landlord?</span></h2>
+            <p>
+                Join a growing community of Nigerians who are no longer just paying for calls — they're earning from them. The ₦7 Trillion telecom pie is no longer just for the giants.
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="register.html" class="btn-gold">
+                    <i class="fa-solid fa-rocket me-2"></i>Join Nextel Now
+                </a>
+                <a href="#faq-section" class="btn-outline-gold">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+<footer id="footer">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-4 col-md-12">
+                <div class="footer-logo">
+                    <img src="assets/logo.png" alt="Nextel Connect">
+                </div>
+                <p class="footer-tagline">
+                    Your World, Your Network.<br>
+                    At its core, Nextel Connect turns staying connected into staying rewarded — creating a new kind of digital economy driven by you.
+                </p>
+                <div class="social-links mt-3">
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-6 footer-links">
+                <h5>Quick Links</h5>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#about-section">About</a></li>
+                    <li><a href="#how-section">How It Works</a></li>
+                    <li><a href="#streams-section">Income Streams</a></li>
+                    <li><a href="#packages-section">Packages</a></li>
+                    <li><a href="#faq-section">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-6 footer-links">
+                <h5>Get Started</h5>
+                <ul>
+                    <li><a href="register.html">Register Now</a></li>
+                    <li><a href="#packages-section">Normal Package</a></li>
+                    <li><a href="#packages-section">Prime Package</a></li>
+                    <li><a href="#how-section">NTU Voucher</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-12 footer-links">
+                <h5>Contact</h5>
+                <div class="footer-contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    Info@nextelconnect
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fab fa-telegram"></i>
+                    Nextel Connect
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fab fa-tiktok"></i>
+                    nextel_official
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="copyright">
+            Copyright &copy; 2025 <strong><span>Nextel Connect</span></strong>. All Rights Reserved.
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({ duration: 800, once: true });
+
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar-custom');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // Navbar mobile toggle background
+        const collapse = document.querySelector('.navbar-collapse');
+        if (collapse) {
+            collapse.addEventListener('show.bs.collapse', () => navbar.classList.add('toggled'));
+            collapse.addEventListener('hide.bs.collapse', () => navbar.classList.remove('toggled'));
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Hide video if it fails to load
+        const video = document.getElementById('heroVideo');
+        if (video) {
+            video.addEventListener('error', () => {
+                video.parentElement.style.display = 'none';
+            });
+        }
+    });
+</script>
+
+<script>
+    window.addEventListener('beforeinstallprompt', (e) => e.preventDefault());
+</script>
+
+</body>
+</html>
