@@ -559,6 +559,7 @@
         appId:             "1:22177815395:web:2ca7caa2b1626299675156"
     };
 
+    const TEST_MODE = false;
     const KORA_PUBLIC_KEY   = "pk_live_BVFqyauoDX8rXa5GhotV8snxf1HfpsCPMnRos3h8";
     const TELEGRAM_FALLBACK = "https://t.me/coachfavour321?text=Hello%2C%20Admin!%20%F0%9F%9A%80%0A%0AI%20have%20just%20made%20my%20payment%20for%20the%20NEXTEL%20Registration.%20%0A%0APlease%20confirm%20my%20payment";
 
@@ -602,6 +603,17 @@
         const amount        = Number(selectedOpt.dataset.amount);
         const reference     = `NXT-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
 
+        // Hard validate before touching Korapay
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!fullName || !username || !email || !phone || !amount) {
+            alert("Please fill in all fields before proceeding.");
+            return;
+        }
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
         setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Opening payment…', true);
 
         const koraOptions = {
@@ -615,19 +627,21 @@
             onSuccess: async (data) => {
                 setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Saving your account…', true);
 
-                try {
-                    await setDoc(doc(db, "nextelusers", email), {
-                        fullName,
-                        username,
-                        email,
-                        phone,
-                        planName:         selectedOpt.value,
-                        activationAmount: String(amount),
-                        activated:        true,
-                        koraReference:    data.reference || reference,
-                        joinedAt:         serverTimestamp()
-                    });
-                } catch (_) { /* proceed even if Firestore is unreachable */ }
+                if (!TEST_MODE) {
+                    try {
+                        await setDoc(doc(db, "nextelusers", email), {
+                            fullName,
+                            username,
+                            email,
+                            phone,
+                            planName:         selectedOpt.value,
+                            activationAmount: String(amount),
+                            activated:        true,
+                            koraReference:    data.reference || reference,
+                            joinedAt:         serverTimestamp()
+                        });
+                    } catch (_) {}
+                }
 
                 setBtn('<i class="fa-solid fa-check me-2"></i>Payment Successful!', true);
 
