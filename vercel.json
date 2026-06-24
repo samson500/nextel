@@ -3,6 +3,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/register", "destination": "/register.html" },
+    { "source": "/payment",  "destination": "/payment.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/admin", "destination": "/admin.html" }
   ],
@@ -20,7 +21,7 @@
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, x-korapay-signature" }
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, x-korapay-signature, x-wiaxy-signature" }
       ]
     }
   ]

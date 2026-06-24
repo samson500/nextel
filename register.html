@@ -559,8 +559,6 @@
         appId:             "1:22177815395:web:2ca7caa2b1626299675156"
     };
 
-    const TEST_MODE = false;
-    const KORA_PUBLIC_KEY   = "pk_live_BVFqyauoDX8rXa5GhotV8snxf1HfpsCPMnRos3h8";
     const TELEGRAM_FALLBACK = "https://t.me/coachfavour321?text=Hello%2C%20Admin!%20%F0%9F%9A%80%0A%0AI%20have%20just%20made%20my%20payment%20for%20the%20NEXTEL%20Registration.%20%0A%0APlease%20confirm%20my%20payment";
 
     const app = initializeApp(firebaseConfig);
@@ -570,7 +568,6 @@
     const form      = document.getElementById("registerForm");
     const submitBtn = document.getElementById("registerBtn");
 
-    // Load admin-controlled Telegram link from account/nextelbobby
     let telegramLink = TELEGRAM_FALLBACK;
     async function loadTelegramLink() {
         try {
@@ -578,7 +575,7 @@
             if (snap.exists() && snap.data().telegramLink) {
                 telegramLink = snap.data().telegramLink;
             }
-        } catch (_) { /* use fallback */ }
+        } catch (_) {}
     }
     loadTelegramLink();
 
@@ -587,94 +584,102 @@
         submitBtn.disabled  = disabled;
     }
 
-    function getKoraSafeText(text) {
-        return text.replace(/[^a-zA-Z0-9 .,_-]/g, "").trim();
+    function showError(msg) {
+        const existing = document.getElementById("payErrMsg");
+        if (existing) existing.remove();
+        const err = document.createElement("p");
+        err.id = "payErrMsg";
+        err.className = "pay-error";
+        err.textContent = msg;
+        submitBtn.parentElement.appendChild(err);
+        setTimeout(() => err.remove(), 6000);
     }
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const planEl        = document.getElementById("plan");
-        const selectedOpt   = planEl.options[planEl.selectedIndex];
-        const fullName      = document.getElementById("fullName").value.trim();
-        const username      = document.getElementById("username").value.trim();
-        const email         = document.getElementById("email").value.trim().toLowerCase();
-        const phone         = document.getElementById("phone").value.trim();
-        const amount        = Number(selectedOpt.dataset.amount);
-        const reference     = `NXT-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
+        const planEl      = document.getElementById("plan");
+        const selectedOpt = planEl.options[planEl.selectedIndex];
+        const fullName    = document.getElementById("fullName").value.trim();
+        const username    = document.getElementById("username").value.trim();
+        const email       = document.getElementById("email").value.trim().toLowerCase();
+        const phone       = document.getElementById("phone").value.trim();
+        const password    = document.getElementById("password").value.trim();
+        const amount      = Number(selectedOpt.dataset.amount);
+        const reference   = `NXT-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
 
-        // Hard validate before touching Korapay
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!fullName || !username || !email || !phone || !amount) {
-            alert("Please fill in all fields before proceeding.");
+        if (!fullName || !username || !email || !phone || !password || !amount) {
+            showError("Please fill in all fields before proceeding.");
             return;
         }
         if (!emailRegex.test(email)) {
-            alert("Please enter a valid email address.");
+            showError("Please enter a valid email address.");
             return;
         }
 
-        setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Opening payment…', true);
+        setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Creating payment account…', true);
 
-        const koraOptions = {
-            key:       KORA_PUBLIC_KEY,
-            reference,
-            amount,
-            currency:  "NGN",
-            customer:  { name: fullName, email },
-            narration: getKoraSafeText(`Nextel Connect Starter Package Activation`),
+        const nameParts = fullName.split(" ");
+        const firstName = nameParts[0];
+        const lastName  = nameParts.slice(1).join(" ") || nameParts[0];
 
-            onSuccess: async (data) => {
-                setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Saving your account…', true);
+        try {
+            await setDoc(doc(db, "nextelusers", email), {
+                fullName,
+                username,
+                email,
+                phone,
+                password,
+                planName:         selectedOpt.value,
+                activationAmount: String(amount),
+                activated:        false,
+                aspfiyReference:  reference,
+                joinedAt:         serverTimestamp()
+            });
 
-                if (!TEST_MODE) {
-                    try {
-                        await setDoc(doc(db, "nextelusers", email), {
-                            fullName,
-                            username,
-                            email,
-                            phone,
-                            planName:         selectedOpt.value,
-                            activationAmount: String(amount),
-                            activated:        true,
-                            koraReference:    data.reference || reference,
-                            joinedAt:         serverTimestamp()
-                        });
-                    } catch (_) {}
-                }
+            const res = await fetch("/api/aspfiy-reserve", {
+                method:  "POST",
+                headers: { "Content-Type": "application/json" },
+                body:    JSON.stringify({
+                    reference, firstName, lastName, email, phone,
+                    webhookUrl: `${window.location.origin}/api/aspfiy-webhook`
+                })
+            });
 
-                setBtn('<i class="fa-solid fa-check me-2"></i>Payment Successful!', true);
+            const data = await res.json();
 
-                setTimeout(() => {
-                    window.location.href = telegramLink;
-                }, 800);
-            },
-
-            onClose: () => {
+            if (!res.ok) {
                 setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
-            },
-
-            onFailed: (data) => {
-                console.error("Korapay failed:", data);
-                setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
-                const existing = document.getElementById("payErrMsg");
-                if (existing) existing.remove();
-                const err = document.createElement("p");
-                err.id = "payErrMsg";
-                err.className = "pay-error";
-                err.textContent = "Payment failed. Please try again.";
-                submitBtn.parentElement.appendChild(err);
-                setTimeout(() => err.remove(), 4000);
+                showError(data.error || "Could not create payment account. Please try again.");
+                return;
             }
-        };
 
-        const notificationUrl = window.location.protocol === "https:"
-            ? `${window.location.origin}/api/kora-webhook`
-            : null;
+            const accountNumber = data.data?.account?.account_number || data.accountNumber || data.account_number || "";
+            const bankName      = data.data?.account?.bank_name      || data.bankName      || data.bank_name      || "Paga";
+            const accountName   = data.data?.account?.account_name   || "";
 
-        if (notificationUrl) koraOptions.notification_url = notificationUrl;
+            if (!accountNumber) {
+                setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
+                showError("Payment account created but account number missing. Contact support.");
+                return;
+            }
 
-        launchKoraPayment(koraOptions);
+            // Pass payment details to payment page via sessionStorage
+            sessionStorage.setItem("nxt_payment", JSON.stringify({
+                reference, accountNumber, bankName, accountName,
+                amount, fullName, email,
+                planName: selectedOpt.value
+            }));
+
+            setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Redirecting…', true);
+            window.location.href = "payment.html";
+
+        } catch (err) {
+            console.error("Registration error:", err);
+            setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
+            showError("Something went wrong. Please try again.");
+        }
     });
 </script>
 
@@ -682,29 +687,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-<script>
-    (function makeStorageSetItemThenable() {
-        if (!window.Storage || !window.Storage.prototype) return;
-        const orig = window.Storage.prototype.setItem;
-        if (orig.__nextelThenable) return;
-        function thenable(key, value) {
-            try { orig.call(this, key, value); return Promise.resolve(); }
-            catch (e) { return Promise.reject(e); }
-        }
-        thenable.__nextelThenable = true;
-        window.Storage.prototype.setItem = thenable;
-    })();
-</script>
-
-<!-- Korapay Checkout -->
-<script src="https://korablobstorage.blob.core.windows.net/modal-bucket/korapay-collections.min.js"></script>
-
-<script>
-    function launchKoraPayment(opts) {
-        window.Korapay.initialize(opts);
-    }
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
