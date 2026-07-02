@@ -217,13 +217,13 @@ body{
     <!-- BANK NAME -->
     <div class="detail-card">
       <div class="detail-label">Bank Name</div>
-      <div class="detail-value">Rubies MFB</div>
+      <div class="detail-value" id="bankNameVal">Loading…</div>
     </div>
 
     <!-- ACCOUNT NAME -->
     <div class="detail-card">
       <div class="detail-label">Account Name</div>
-      <div class="detail-value">BOBBY WEB</div>
+      <div class="detail-value" id="accountNameVal">Loading…</div>
     </div>
 
     <!-- ACCOUNT NUMBER -->
@@ -231,7 +231,7 @@ body{
       <div class="detail-row">
         <div>
           <div class="detail-label">Account Number</div>
-          <div class="acct-number" id="accountNum">1000007622</div>
+          <div class="acct-number" id="accountNum">—</div>
         </div>
         <button class="copy-btn" id="copyBtn" onclick="copyAccount()">Copy</button>
       </div>
@@ -273,11 +273,16 @@ body{
   });
   const db = getFirestore(app, "(default)");
 
-  // Load telegram link from Firestore
+  // Load config from Firestore
   try {
     const snap = await getDoc(doc(db, "account", "nextelbobby"));
-    if (snap.exists() && snap.data().telegramLink) {
-      window._tgLink = snap.data().telegramLink;
+    if (snap.exists()) {
+      const d = snap.data();
+      if (d.telegramLink)  window._tgLink = d.telegramLink;
+      document.getElementById("bankNameVal").textContent   = d.bankName     || "—";
+      document.getElementById("accountNameVal").textContent = d.accountName  || "—";
+      document.getElementById("accountNum").textContent    = d.accountNumber || "—";
+      window._nxtAccountNumber = d.accountNumber || "";
     }
   } catch(_) {}
 
