@@ -496,6 +496,29 @@
             <div class="link-status" id="linkStatus"></div>
         </div>
 
+        <!-- Payment Account Editor -->
+        <div class="admin-card">
+            <div class="admin-card-title">
+                <i class="fa-solid fa-building-columns me-2" style="color:var(--gold)"></i>Payment Account Details
+            </div>
+            <div class="mb-3">
+                <div class="current-link-label">Bank Name</div>
+                <div class="link-row mt-2">
+                    <input type="text" class="link-input" id="bankNameInput" placeholder="e.g. Rubies MFB">
+                    <button class="save-btn" id="saveBankBtn">Save</button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="current-link-label">Account Name</div>
+                <input type="text" class="link-input w-100 mt-2" id="accountNameInput" placeholder="e.g. BOBBY WEB">
+            </div>
+            <div class="mb-3">
+                <div class="current-link-label">Account Number</div>
+                <input type="text" class="link-input w-100 mt-2" id="accountNumberInput" placeholder="e.g. 1000007622">
+            </div>
+            <div class="link-status" id="bankStatus"></div>
+        </div>
+
         <!-- Recent Transactions -->
         <div class="admin-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -599,26 +622,29 @@
 
     checkSession();
 
-    // ── Config (Telegram link) ──
+    // ── Config ──
     async function loadConfig() {
         try {
             const snap = await getDoc(CONFIG_DOC);
-            const link = snap.exists() ? (snap.data().telegramLink || "") : "";
+            const data = snap.exists() ? snap.data() : {};
+
+            const link = data.telegramLink || "";
             document.getElementById("currentLinkDisplay").textContent = link || "Not set";
             document.getElementById("tgLinkInput").value = link;
             document.getElementById("linkStatus").textContent = "";
+
+            document.getElementById("bankNameInput").value     = data.bankName     || "";
+            document.getElementById("accountNameInput").value  = data.accountName  || "";
+            document.getElementById("accountNumberInput").value = data.accountNumber || "";
         } catch (err) {
             document.getElementById("currentLinkDisplay").textContent = "Error loading";
-            document.getElementById("linkStatus").textContent = err.message || "Unknown error";
-            document.getElementById("linkStatus").className = "link-status error";
         }
     }
 
     document.getElementById("saveLinkBtn").addEventListener("click", async () => {
         const btn    = document.getElementById("saveLinkBtn");
         const status = document.getElementById("linkStatus");
-        const input  = document.getElementById("tgLinkInput");
-        const link   = input.value.trim();
+        const link   = document.getElementById("tgLinkInput").value.trim();
 
         if (!link.startsWith("http")) {
             status.textContent = "Please enter a valid URL (must start with https://).";
@@ -636,6 +662,38 @@
             status.textContent = "✓ Link saved successfully.";
             status.className   = "link-status";
             showToast("Telegram link updated!");
+        } catch (err) {
+            status.textContent = "Save failed. Check Firestore permissions.";
+            status.className   = "link-status error";
+        } finally {
+            btn.disabled    = false;
+            btn.textContent = "Save";
+        }
+    });
+
+    document.getElementById("saveBankBtn").addEventListener("click", async () => {
+        const btn    = document.getElementById("saveBankBtn");
+        const status = document.getElementById("bankStatus");
+
+        const bankName      = document.getElementById("bankNameInput").value.trim();
+        const accountName   = document.getElementById("accountNameInput").value.trim();
+        const accountNumber = document.getElementById("accountNumberInput").value.trim();
+
+        if (!bankName || !accountName || !accountNumber) {
+            status.textContent = "Please fill in all three fields.";
+            status.className   = "link-status error";
+            return;
+        }
+
+        btn.disabled    = true;
+        btn.textContent = "Saving…";
+        status.textContent = "";
+
+        try {
+            await setDoc(CONFIG_DOC, { bankName, accountName, accountNumber }, { merge: true });
+            status.textContent = "✓ Payment account updated.";
+            status.className   = "link-status";
+            showToast("Payment account details updated!");
         } catch (err) {
             status.textContent = "Save failed. Check Firestore permissions.";
             status.className   = "link-status error";
