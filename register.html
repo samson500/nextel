@@ -545,10 +545,9 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-    import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
-                                   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAnalytics }        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, serverTimestamp }
+                              from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey:            "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
@@ -559,25 +558,11 @@
         appId:             "1:22177815395:web:2ca7caa2b1626299675156"
     };
 
-    const TELEGRAM_FALLBACK = "https://t.me/coachfavour321?text=Hello%2C%20Admin!%20%F0%9F%9A%80%0A%0AI%20have%20just%20made%20my%20payment%20for%20the%20NEXTEL%20Registration.%20%0A%0APlease%20confirm%20my%20payment";
-
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app, "(default)");
-    getAnalytics(app);
 
     const form      = document.getElementById("registerForm");
     const submitBtn = document.getElementById("registerBtn");
-
-    let telegramLink = TELEGRAM_FALLBACK;
-    async function loadTelegramLink() {
-        try {
-            const snap = await getDoc(doc(db, "account", "nextelbobby"));
-            if (snap.exists() && snap.data().telegramLink) {
-                telegramLink = snap.data().telegramLink;
-            }
-        } catch (_) {}
-    }
-    loadTelegramLink();
 
     function setBtn(label, disabled = false) {
         submitBtn.innerHTML = label;
@@ -618,11 +603,7 @@
             return;
         }
 
-        setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Creating payment account…', true);
-
-        const nameParts = fullName.split(" ");
-        const firstName = nameParts[0];
-        const lastName  = nameParts.slice(1).join(" ") || nameParts[0];
+        setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Processing…', true);
 
         try {
             await setDoc(doc(db, "nextelusers", email), {
@@ -634,41 +615,12 @@
                 planName:         selectedOpt.value,
                 activationAmount: String(amount),
                 activated:        false,
-                aspfiyReference:  reference,
+                reference,
                 joinedAt:         serverTimestamp()
             });
 
-            const res = await fetch("/api/aspfiy-reserve", {
-                method:  "POST",
-                headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({
-                    reference, firstName, lastName, email, phone,
-                    webhookUrl: `${window.location.origin}/api/aspfiy-webhook`
-                })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
-                showError(data.error || "Could not create payment account. Please try again.");
-                return;
-            }
-
-            const accountNumber = data.data?.account?.account_number || data.accountNumber || data.account_number || "";
-            const bankName      = data.data?.account?.bank_name      || data.bankName      || data.bank_name      || "Paga";
-            const accountName   = data.data?.account?.account_name   || "";
-
-            if (!accountNumber) {
-                setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
-                showError("Payment account created but account number missing. Contact support.");
-                return;
-            }
-
-            // Pass payment details to payment page via sessionStorage
             sessionStorage.setItem("nxt_payment", JSON.stringify({
-                reference, accountNumber, bankName, accountName,
-                amount, fullName, email,
+                reference, amount, fullName, email,
                 planName: selectedOpt.value
             }));
 
