@@ -520,6 +520,34 @@
             <div class="link-status" id="bankStatus"></div>
         </div>
 
+        <!-- App Telegram Support Link -->
+        <div class="admin-card">
+            <div class="admin-card-title">
+                <i class="fab fa-telegram me-2" style="color:#2AABEE"></i>App Telegram Support Link
+            </div>
+            <div class="current-link-label">Current link</div>
+            <div class="current-link-value" id="appSupportLinkDisplay">Loading…</div>
+            <div class="link-row mt-3">
+                <input type="url" class="link-input" id="tgSupportLinkInput" placeholder="https://t.me/support">
+                <button class="save-btn" id="saveSupportLinkBtn">Save</button>
+            </div>
+            <div class="link-status" id="supportLinkStatus"></div>
+        </div>
+
+        <!-- App Website Redirect Link -->
+        <div class="admin-card">
+            <div class="admin-card-title">
+                <i class="fa-solid fa-globe me-2" style="color:#ffffff"></i>App Website Redirect Link
+            </div>
+            <div class="current-link-label">Current link</div>
+            <div class="current-link-value" id="appWebLinkDisplay">Loading…</div>
+            <div class="link-row mt-3">
+                <input type="url" class="link-input" id="ctaInput" placeholder="https://website.com">
+                <button class="save-btn" id="saveWebLinkBtn">Save</button>
+            </div>
+            <div class="link-status" id="webLinkStatus"></div>
+        </div>
+
         <!-- Recent Transactions
         <div class="admin-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -550,33 +578,6 @@
                 </table>
             </div>
         </div> -->
-
-
-         <div class="admin-card">
-            <div class="admin-card-title">
-                <i class="fab fa-telegram me-2" style="color:#2AABEE"></i>App Telegram Support Link
-            </div>
-            <div class="current-link-label">Current link</div>
-            <div class="current-link-value" id="appSupportLinkDisplay">Loading…</div>
-            <div class="link-row mt-3">
-                <input type="url" class="link-input" id="tgSupportLinkInput" placeholder="https://t.me/support">
-                <button class="save-btn" id="saveLinkBtn">Save</button>
-            </div>
-            <div class="link-status" id="linkStatus"></div>
-        </div>
-
-        <div class="admin-card">
-            <div class="admin-card-title">
-                <i class="fab fa-google me-2" style="color:#ffffff"></i>App website redirect link
-            </div>
-            <div class="current-link-label">Current link</div>
-            <div class="current-link-value" id="appWebLinkDisplay">Loading…</div>
-            <div class="link-row mt-3">
-                <input type="url" class="link-input" id="ctaInput" placeholder="https://website link">
-                <button class="save-btn" id="saveLinkBtn">Save</button>
-            </div>
-            <div class="link-status" id="linkStatus"></div>
-        </div>
 
     </div>
 </div>
@@ -662,48 +663,46 @@
             document.getElementById("currentLinkDisplay").textContent = link || "Not set";
             document.getElementById("tgLinkInput").value = link;
             document.getElementById("linkStatus").textContent = "";
-            document.getElementById("appSupportLinkDisplay").textContent = data.appSupportLink || "";
-            document.getElementById("appWebLinkDisplay").textContent = data.appWebLink || "";
 
             document.getElementById("bankNameInput").value     = data.bankName     || "";
             document.getElementById("accountNameInput").value  = data.accountName  || "";
             document.getElementById("accountNumberInput").value = data.accountNumber || "";
         } catch (err) {
             document.getElementById("currentLinkDisplay").textContent = "Error loading";
+            console.error("loadConfig error:", err);
         }
     }
 
-     async function loadAppConfig() {
+    async function loadAppConfig() {
         try {
             const snap = await getDoc(APP_CONFIG_DOC);
             const data = snap.exists() ? snap.data() : {};
 
             const appSupportLink = data.telegramLink || "";
             const appWebLink = data.cta || "";
-         
+            
             document.getElementById("appSupportLinkDisplay").textContent = appSupportLink || "Not set";
             document.getElementById("tgSupportLinkInput").value = appSupportLink;
             document.getElementById("appWebLinkDisplay").textContent = appWebLink || "Not set";
             document.getElementById("ctaInput").value = appWebLink;
-
-            
         } catch (err) {
-            document.getElementById("currentLinkDisplay").textContent = "Error loading";
+            console.error("loadAppConfig error:", err);
         }
     }
 
+    // ── Telegram Link Save (Original) ──
     document.getElementById("saveLinkBtn").addEventListener("click", async () => {
-        const btn    = document.getElementById("saveLinkBtn");
+        const btn = document.getElementById("saveLinkBtn");
         const status = document.getElementById("linkStatus");
-        const link   = document.getElementById("tgLinkInput").value.trim();
+        const link = document.getElementById("tgLinkInput").value.trim();
 
         if (!link.startsWith("http")) {
             status.textContent = "Please enter a valid URL (must start with https://).";
-            status.className   = "link-status error";
+            status.className = "link-status error";
             return;
         }
 
-        btn.disabled    = true;
+        btn.disabled = true;
         btn.textContent = "Saving…";
         status.textContent = "";
 
@@ -711,45 +710,112 @@
             await setDoc(CONFIG_DOC, { telegramLink: link }, { merge: true });
             document.getElementById("currentLinkDisplay").textContent = link;
             status.textContent = "✓ Link saved successfully.";
-            status.className   = "link-status";
+            status.className = "link-status";
             showToast("Telegram link updated!");
         } catch (err) {
             status.textContent = "Save failed. Check Firestore permissions.";
-            status.className   = "link-status error";
+            status.className = "link-status error";
+            console.error("Save error:", err);
         } finally {
-            btn.disabled    = false;
+            btn.disabled = false;
             btn.textContent = "Save";
         }
     });
 
+    // ── App Support Link Save ──
+    document.getElementById("saveSupportLinkBtn").addEventListener("click", async () => {
+        const btn = document.getElementById("saveSupportLinkBtn");
+        const status = document.getElementById("supportLinkStatus");
+        const link = document.getElementById("tgSupportLinkInput").value.trim();
+
+        if (!link.startsWith("http")) {
+            status.textContent = "Please enter a valid URL (must start with https://).";
+            status.className = "link-status error";
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Saving…";
+        status.textContent = "";
+
+        try {
+            await setDoc(APP_CONFIG_DOC, { telegramLink: link }, { merge: true });
+            document.getElementById("appSupportLinkDisplay").textContent = link;
+            status.textContent = "✓ Support link saved successfully.";
+            status.className = "link-status";
+            showToast("App support link updated!");
+        } catch (err) {
+            status.textContent = "Save failed. Check Firestore permissions.";
+            status.className = "link-status error";
+            console.error("Save error:", err);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Save";
+        }
+    });
+
+    // ── App Website Link Save ──
+    document.getElementById("saveWebLinkBtn").addEventListener("click", async () => {
+        const btn = document.getElementById("saveWebLinkBtn");
+        const status = document.getElementById("webLinkStatus");
+        const link = document.getElementById("ctaInput").value.trim();
+
+        if (!link.startsWith("http")) {
+            status.textContent = "Please enter a valid URL (must start with https://).";
+            status.className = "link-status error";
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Saving…";
+        status.textContent = "";
+
+        try {
+            await setDoc(APP_CONFIG_DOC, { cta: link }, { merge: true });
+            document.getElementById("appWebLinkDisplay").textContent = link;
+            status.textContent = "✓ Website link saved successfully.";
+            status.className = "link-status";
+            showToast("App website link updated!");
+        } catch (err) {
+            status.textContent = "Save failed. Check Firestore permissions.";
+            status.className = "link-status error";
+            console.error("Save error:", err);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Save";
+        }
+    });
+
+    // ── Payment Account Save ──
     document.getElementById("saveBankBtn").addEventListener("click", async () => {
-        const btn    = document.getElementById("saveBankBtn");
+        const btn = document.getElementById("saveBankBtn");
         const status = document.getElementById("bankStatus");
 
-        const bankName      = document.getElementById("bankNameInput").value.trim();
-        const accountName   = document.getElementById("accountNameInput").value.trim();
+        const bankName = document.getElementById("bankNameInput").value.trim();
+        const accountName = document.getElementById("accountNameInput").value.trim();
         const accountNumber = document.getElementById("accountNumberInput").value.trim();
 
         if (!bankName || !accountName || !accountNumber) {
             status.textContent = "Please fill in all three fields.";
-            status.className   = "link-status error";
+            status.className = "link-status error";
             return;
         }
 
-        btn.disabled    = true;
+        btn.disabled = true;
         btn.textContent = "Saving…";
         status.textContent = "";
 
         try {
             await setDoc(CONFIG_DOC, { bankName, accountName, accountNumber }, { merge: true });
             status.textContent = "✓ Payment account updated.";
-            status.className   = "link-status";
+            status.className = "link-status";
             showToast("Payment account details updated!");
         } catch (err) {
             status.textContent = "Save failed. Check Firestore permissions.";
-            status.className   = "link-status error";
+            status.className = "link-status error";
+            console.error("Save error:", err);
         } finally {
-            btn.disabled    = false;
+            btn.disabled = false;
             btn.textContent = "Save";
         }
     });
@@ -760,18 +826,18 @@
         tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Loading…</td></tr>`;
 
         try {
-            const snap  = await getDocs(collection(db, "nextelusers"));
+            const snap = await getDocs(collection(db, "nextelusers"));
             const users = [];
             snap.forEach((d) => users.push(d.data()));
 
             const transactions = users.filter(u => u.activated && u.koraReference);
 
             const totalFunds = transactions.reduce((s, u) => s + Number(u.activationAmount || 0), 0);
-            const avg        = transactions.length ? Math.round(totalFunds / transactions.length) : 0;
+            const avg = transactions.length ? Math.round(totalFunds / transactions.length) : 0;
 
             document.getElementById("statTotal").textContent = transactions.length;
             document.getElementById("statFunds").textContent = `₦${totalFunds.toLocaleString()}`;
-            document.getElementById("statAvg").textContent   = transactions.length ? `₦${avg.toLocaleString()}` : "—";
+            document.getElementById("statAvg").textContent = transactions.length ? `₦${avg.toLocaleString()}` : "—";
 
             if (transactions.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No transactions yet.</td></tr>`;
@@ -797,7 +863,7 @@
                           })
                         : "—";
 
-                const ref      = u.koraReference || "—";
+                const ref = u.koraReference || "—";
                 const shortRef = ref.length > 18 ? ref.slice(0, 18) + "…" : ref;
 
                 return `<tr>
