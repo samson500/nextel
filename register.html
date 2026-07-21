@@ -571,7 +571,8 @@
                         <div class="mb-3">
                             <label class="form-label">Select Package</label>
 
-                            <div class="pkg-option" data-plan="Starter Package" data-amount="10000" data-paylink="https://flutterwave.com/pay/mnc5lud2hjkk" onclick="selectPkg(this)">
+                            <!-- REMOVED hardcoded paylink - will be set dynamically by JavaScript -->
+                            <div class="pkg-option" data-plan="Starter Package" data-amount="10000" onclick="selectPkg(this)">
                                 <div class="pkg-info">
                                     <div class="pkg-name">Starter Package</div>
                                     <div class="pkg-desc">Number pool &middot; Call earnings &middot; Autopilot</div>
@@ -581,8 +582,9 @@
                                     <div class="pkg-radio"></div>
                                 </div>
                             </div>
-<!-- 
-                            <div class="pkg-option" data-plan="Elite Package" data-amount="17500" data-paylink="https://paystack.shop/pay/pdo-1qi-61" onclick="selectPkg(this)">
+
+                            <!-- REMOVED hardcoded paylink - will be set dynamically by JavaScript -->
+                            <!-- <div class="pkg-option" data-plan="Elite Package" data-amount="17500" onclick="selectPkg(this)">
                                 <div class="pkg-info">
                                     <div class="pkg-name">Elite Package <span class="pkg-tag">Popular</span></div>
                                     <div class="pkg-desc">Larger pool &middot; Priority earnings &middot; All features</div>
@@ -652,7 +654,7 @@
 <!-- Firebase SDK -->
 <script type="module">
     import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, serverTimestamp }
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
                               from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -670,6 +672,39 @@
     const form      = document.getElementById("registerForm");
     const submitBtn = document.getElementById("registerBtn");
 
+    // ─── LOAD PAYMENT LINKS FROM FIRESTORE ───
+    let paymentLink1 = "#";
+    let paymentLink2 = "#";
+
+    try {
+        const snap = await getDoc(doc(db, "account", "nextelbobby"));
+        if (snap.exists()) {
+            const data = snap.data();
+            paymentLink1 = data.paymentLink1 || "#";
+            paymentLink2 = data.paymentLink2 || "#";
+            
+            console.log("✅ Payment links loaded from Firestore:");
+            console.log("  - Starter (10k):", paymentLink1);
+            console.log("  - Elite (14k):", paymentLink2);
+            
+            // Set the payment links on the package options
+            const pkgOptions = document.querySelectorAll('.pkg-option');
+            pkgOptions.forEach(pkg => {
+                const amount = Number(pkg.dataset.amount);
+                if (amount <= 10000) {
+                    pkg.dataset.paylink = paymentLink1;
+                } else {
+                    pkg.dataset.paylink = paymentLink2;
+                }
+            });
+        } else {
+            console.warn("⚠️ Config document not found. Using fallback links.");
+        }
+    } catch (err) {
+        console.error("❌ Error loading config:", err);
+    }
+
+    // ─── FORM SUBMISSION ───
     function setBtn(label, disabled = false) {
         submitBtn.innerHTML = label;
         submitBtn.disabled  = disabled;
@@ -703,7 +738,7 @@
 
         const planName  = selectedCard.dataset.plan;
         const amount    = Number(selectedCard.dataset.amount);
-        const payLink   = selectedCard.dataset.paylink;
+        const payLink   = selectedCard.dataset.paylink; // Now dynamically set from Firestore
         const reference = `NXT-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -713,6 +748,12 @@
         }
         if (!emailRegex.test(email)) {
             showError("Please enter a valid email address.");
+            return;
+        }
+
+        // Check if payment link is configured
+        if (!payLink || payLink === "#" || !payLink.startsWith("http")) {
+            showError("Payment link not configured. Please contact support.");
             return;
         }
 
