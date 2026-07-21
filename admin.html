@@ -520,6 +520,34 @@
             <div class="link-status" id="bankStatus"></div>
         </div>
 
+        <!-- 10k Payment Link -->
+        <div class="admin-card">
+            <div class="admin-card-title">
+                <i class="fa-solid fa-globe me-2" style="color:#ffffff"></i>10k Payment Link
+            </div>
+            <div class="current-link-label">Current link</div>
+            <div class="current-link-value" id="paymentLink1Display">Loading…</div>
+            <div class="link-row mt-3">
+                <input type="url" class="link-input" id="paymentLink1Input" placeholder="https://payment.com/10k">
+                <button class="save-btn" id="savePaymentLink1Btn">Save</button>
+            </div>
+            <div class="link-status" id="paymentLink1Status"></div>
+        </div>
+
+        <!-- 14k Payment Link -->
+        <div class="admin-card">
+            <div class="admin-card-title">
+                <i class="fa-solid fa-globe me-2" style="color:#ffffff"></i>14k Payment Link
+            </div>
+            <div class="current-link-label">Current link</div>
+            <div class="current-link-value" id="paymentLink2Display">Loading…</div>
+            <div class="link-row mt-3">
+                <input type="url" class="link-input" id="paymentLink2Input" placeholder="https://payment.com/14k">
+                <button class="save-btn" id="savePaymentLink2Btn">Save</button>
+            </div>
+            <div class="link-status" id="paymentLink2Status"></div>
+        </div>
+
         <!-- App Telegram Support Link -->
         <div class="admin-card">
             <div class="admin-card-title">
@@ -547,37 +575,6 @@
             </div>
             <div class="link-status" id="webLinkStatus"></div>
         </div>
-
-        <!-- Recent Transactions
-        <div class="admin-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="admin-card-title mb-0">
-                    <i class="fa-solid fa-receipt me-2"></i>Recent Transactions
-                </div>
-                <button class="refresh-btn" id="refreshBtn">
-                    <i class="fa-solid fa-rotate-right me-1"></i>Refresh
-                </button>
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Package</th>
-                            <th>Amount (NGN)</th>
-                            <th>Reference</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <tr><td colspan="8" class="empty-state">Loading transactions…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> -->
 
     </div>
 </div>
@@ -660,9 +657,20 @@
             const data = snap.exists() ? snap.data() : {};
 
             const link = data.telegramLink || "";
+            const paymentLink1 = data.paymentLink1 || "";
+            const paymentLink2 = data.paymentLink2 || "";
+
             document.getElementById("currentLinkDisplay").textContent = link || "Not set";
             document.getElementById("tgLinkInput").value = link;
             document.getElementById("linkStatus").textContent = "";
+            
+            document.getElementById("paymentLink1Display").textContent = paymentLink1 || "Not set";
+            document.getElementById("paymentLink1Input").value = paymentLink1;
+            document.getElementById("paymentLink1Status").textContent = "";
+            
+            document.getElementById("paymentLink2Display").textContent = paymentLink2 || "Not set";
+            document.getElementById("paymentLink2Input").value = paymentLink2;
+            document.getElementById("paymentLink2Status").textContent = "";
 
             document.getElementById("bankNameInput").value     = data.bankName     || "";
             document.getElementById("accountNameInput").value  = data.accountName  || "";
@@ -690,7 +698,7 @@
         }
     }
 
-    // ── Telegram Link Save (Original) ──
+    // ── Telegram Link Save ──
     document.getElementById("saveLinkBtn").addEventListener("click", async () => {
         const btn = document.getElementById("saveLinkBtn");
         const status = document.getElementById("linkStatus");
@@ -712,6 +720,70 @@
             status.textContent = "✓ Link saved successfully.";
             status.className = "link-status";
             showToast("Telegram link updated!");
+        } catch (err) {
+            status.textContent = "Save failed. Check Firestore permissions.";
+            status.className = "link-status error";
+            console.error("Save error:", err);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Save";
+        }
+    });
+
+    // ── Payment Link 1 Save ──
+    document.getElementById("savePaymentLink1Btn").addEventListener("click", async () => {
+        const btn = document.getElementById("savePaymentLink1Btn");
+        const status = document.getElementById("paymentLink1Status");
+        const link = document.getElementById("paymentLink1Input").value.trim();
+
+        if (!link.startsWith("http")) {
+            status.textContent = "Please enter a valid URL (must start with https://).";
+            status.className = "link-status error";
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Saving…";
+        status.textContent = "";
+
+        try {
+            await setDoc(CONFIG_DOC, { paymentLink1: link }, { merge: true });
+            document.getElementById("paymentLink1Display").textContent = link;
+            status.textContent = "✓ Payment link 1 saved successfully.";
+            status.className = "link-status";
+            showToast("10k payment link updated!");
+        } catch (err) {
+            status.textContent = "Save failed. Check Firestore permissions.";
+            status.className = "link-status error";
+            console.error("Save error:", err);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Save";
+        }
+    });
+
+    // ── Payment Link 2 Save ──
+    document.getElementById("savePaymentLink2Btn").addEventListener("click", async () => {
+        const btn = document.getElementById("savePaymentLink2Btn");
+        const status = document.getElementById("paymentLink2Status");
+        const link = document.getElementById("paymentLink2Input").value.trim();
+
+        if (!link.startsWith("http")) {
+            status.textContent = "Please enter a valid URL (must start with https://).";
+            status.className = "link-status error";
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Saving…";
+        status.textContent = "";
+
+        try {
+            await setDoc(CONFIG_DOC, { paymentLink2: link }, { merge: true });
+            document.getElementById("paymentLink2Display").textContent = link;
+            status.textContent = "✓ Payment link 2 saved successfully.";
+            status.className = "link-status";
+            showToast("14k payment link updated!");
         } catch (err) {
             status.textContent = "Save failed. Check Firestore permissions.";
             status.className = "link-status error";
@@ -886,7 +958,7 @@
         }
     }
 
-    document.getElementById("refreshBtn").addEventListener("click", () => {
+    document.getElementById("refreshBtn")?.addEventListener("click", () => {
         loadUsers();
         showToast("Refreshed");
     });
